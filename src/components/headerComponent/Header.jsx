@@ -5,6 +5,12 @@ export const Header = () => {
     console.log('showHowToPlay');
   }
 
+  const setFocusOnInput = () => {
+    const input = document.querySelector('.game-grid input');
+    if (input) input.focus();
+    console.log('setFocusOnInput');
+  }
+
   // TODO: remove the following test code
   const showResultContainer = () => {
     const howToPlay = document.querySelector('.result-container');
@@ -14,7 +20,8 @@ export const Header = () => {
 
   return (
     <header>
-      <h1>Play Wordle Game!</h1>
+      {/* <h1>Play Wordle Game!</h1> */}
+      <button onClick={setFocusOnInput}>Play Wordle Game</button>
       <button className="how-to-play-button" onClick={showHowToPlay}>How To Play</button>
       <button className="show-result-button" onClick={showResultContainer}>Show result</button>
     </header>
