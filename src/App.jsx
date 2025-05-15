@@ -10,13 +10,13 @@ function App() {
   return (
     <Fragment>
       <Header />
+      <>
+        <HowToPlay />
+      </>
+
       <section className="game-container">
         <GameGridContainer />
         <KeyboardContainer />
-      </section>
-
-      <section>
-        <HowToPlay />
       </section>
       <Footer />
     </Fragment>
