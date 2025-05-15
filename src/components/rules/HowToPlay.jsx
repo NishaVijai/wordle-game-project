@@ -1,17 +1,16 @@
-export const HowToPlay = ({ onClickHandler }) => {
+export const HowToPlay = () => {
   const closeHowToPlay = () => {
     const howToPlay = document.querySelector('.how-to-play');
-    howToPlay.classList.remove('show');
-    console.log('closeHowToPlay');
+    howToPlay.classList.remove('show-how-to-play');
   }
 
   return (
     <div className="how-to-play">
       <section>
-        <button className="close-button" onClick={closeHowToPlay}>X</button>
+        <button className="close-how-to-play-button" onClick={closeHowToPlay}>X</button>
       </section>
 
-      <section>
+      <section className="result">
         <h2>How to Play</h2>
         <p>Guess the word in 6 tries.</p>
         <p>Each guess must be a valid 5-letter word.</p>
