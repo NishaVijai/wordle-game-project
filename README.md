@@ -1,5 +1,8 @@
 # Wordle game:
 
+## Preview
+- https://wordle-game-project-week2.netlify.app/
+
 ## Inspired by,
 https://www.nytimes.com/games/wordle/index.html
 
