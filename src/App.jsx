@@ -1,9 +1,10 @@
 import { Fragment } from 'react';
 import viteLogo from '/vite.svg'
-import { Header } from './components/headerComponent/Header.jsx'
-import { Footer } from './components/footerComponent/Footer.jsx'
+import { Header } from './components/headerComponent/Header.jsx';
+import { Footer } from './components/footerComponent/Footer.jsx';
 import { GameGridContainer } from './components/mainContainer/GameGridContainer.jsx';
 import { KeyboardContainer } from './components/mainContainer/KeyboardContainer.jsx';
+import { HowToPlay } from './components/rules/HowToPlay.jsx';
 
 function App() {
   return (
@@ -12,6 +13,10 @@ function App() {
       <section className="game-container">
         <GameGridContainer />
         <KeyboardContainer />
+      </section>
+
+      <section>
+        <HowToPlay />
       </section>
       <Footer />
     </Fragment>
