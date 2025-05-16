@@ -3,7 +3,6 @@ import viteLogo from '/vite.svg'
 import { Header } from './components/headerComponent/Header.jsx';
 import { Footer } from './components/footerComponent/Footer.jsx';
 import { GameGridContainer } from './components/mainContainer/GameGridContainer.jsx';
-// import { KeyboardContainer } from './components/mainContainer/KeyboardContainer.jsx';
 import { HowToPlay } from './components/rules/HowToPlay.jsx';
 import { ResultContainer } from './components/result/ResultContainer.jsx';
 
@@ -15,6 +14,9 @@ function App() {
   const [gameWon, setGameWon] = useState(false);
 
   const resultRef = useRef(null);
+
+  const howToPlay = document.querySelector('.how-to-play');
+  const resultContainer = document.querySelector('.result-container');
 
   useEffect(() => {
     fetch('/WordleWords.txt')
@@ -39,6 +41,9 @@ function App() {
   }, []);
 
   const handleRestart = () => {
+    howToPlay.classList.remove('show-how-to-play');
+    resultContainer.classList.remove('show-result-container');
+
     setCurrentWord('');
     setGameOver(false);
     setGameWon(false);
