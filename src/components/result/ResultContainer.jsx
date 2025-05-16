@@ -2,7 +2,6 @@ export const ResultContainer = ({ gameWon, correctWord, onRestart }) => {
   const closeResultContainer = () => {
     const result = document.querySelector('.result-container');
     result.classList.remove('show-result-container');
-    console.log('closeResultContainer');
   };
 
   return (
