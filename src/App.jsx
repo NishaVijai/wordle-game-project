@@ -75,6 +75,7 @@ function App() {
       <>
         <ResultContainer
           ref={resultRef}
+          gameOver={gameOver}
           gameWon={gameWon}
           correctWord={correctWord}
           onRestart={handleRestart}

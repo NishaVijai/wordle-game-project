@@ -1,4 +1,4 @@
-export const ResultContainer = ({ gameWon, correctWord, onRestart }) => {
+export const ResultContainer = ({ gameOver, gameWon, correctWord, onRestart }) => {
   const closeResultContainer = () => {
     const result = document.querySelector('.result-container');
     result.classList.remove('show-result-container');
@@ -22,7 +22,7 @@ export const ResultContainer = ({ gameWon, correctWord, onRestart }) => {
         ) : (
           <>
             <h2>Game Over!</h2>
-            <p>The correct word was: <strong>{correctWord}</strong></p>
+            {gameOver ? <p>The correct word was: <strong>{correctWord}</strong></p> : <p>You have not played the game yet.</p>}
             <button
               className="restart-button"
               onClick={onRestart}
