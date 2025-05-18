@@ -1,13 +1,10 @@
-export const HowToPlay = () => {
-  const closeHowToPlay = () => {
-    const howToPlay = document.querySelector('.how-to-play');
-    howToPlay.classList.remove('show-how-to-play');
-  }
+export const HowToPlay = ({ visible, onClose }) => {
+  if (!visible) return null;
 
   return (
-    <div className="how-to-play">
+    <div className="how-to-play show-how-to-play">
       <section>
-        <button className="close-how-to-play-button" onClick={closeHowToPlay}>X</button>
+        <button className="close-how-to-play-button" onClick={onClose}>X</button>
       </section>
 
       <section className="result">
@@ -22,5 +19,5 @@ export const HowToPlay = () => {
         </ul>
       </section>
     </div>
-  )
-}
+  );
+};
