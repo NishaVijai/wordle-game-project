@@ -1,5 +1,14 @@
-export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRestart, onClose }) => {
+export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRestart, onClose, onFocusInput }) => {
   if (!visible) return null;
+
+  const handleRestartAndFocus = () => {
+    onRestart();
+    if (onFocusInput) {
+      setTimeout(() => {
+        onFocusInput();
+      }, 50);
+    }
+  };
 
   return (
     <div className="result-container show-result-container">
@@ -11,7 +20,7 @@ export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRes
             <p>You guessed the word: <strong>{correctWord}</strong></p>
             <button
               className="restart-button"
-              onClick={onRestart}
+              onClick={handleRestartAndFocus}
             >
               Play Again
             </button>
@@ -24,7 +33,7 @@ export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRes
                 <p>The correct word was: <strong>{correctWord}</strong></p>
                 <button
                   className="restart-button"
-                  onClick={onRestart}
+                  onClick={handleRestartAndFocus}
                 >
                   Restart Game
                 </button>
@@ -34,7 +43,7 @@ export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRes
                 <p>You have not played the game yet.</p>
                 <button
                   className="restart-button"
-                  onClick={onRestart}
+                  onClick={handleRestartAndFocus}
                 >
                   Play
                 </button>
