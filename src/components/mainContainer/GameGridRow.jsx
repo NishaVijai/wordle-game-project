@@ -1,7 +1,7 @@
 import { GameGridCell } from './GameGridCell.jsx';
 
 export const GameGridRow = ({
-  rowIdx,
+  rowIndex,
   guess,
   colors,
   inputRefs,
@@ -12,15 +12,15 @@ export const GameGridRow = ({
   status,
 }) => (
   <div className="game-grid-row">
-    {Array.from({ length: cols }).map((_, colIdx) => (
+    {Array.from({ length: cols }).map((_, columnIndex) => (
       <GameGridCell
-        key={`${rowIdx}-${colIdx}`}
-        value={guess[colIdx]}
-        color={colors[colIdx]}
-        inputRef={el => (inputRefs.current[rowIdx][colIdx] = el)}
-        onChange={e => handleInput(rowIdx, colIdx, e.target.value)}
-        onKeyDown={e => handleKeyDown(e, rowIdx, colIdx)}
-        disabled={rowIdx !== activeRow}
+        key={`${rowIndex}-${columnIndex}`}
+        value={guess[columnIndex]}
+        color={colors[columnIndex]}
+        inputRef={el => (inputRefs.current[rowIndex][columnIndex] = el)}
+        onChange={e => handleInput(rowIndex, columnIndex, e.target.value)}
+        onKeyDown={e => handleKeyDown(e, rowIndex, columnIndex)}
+        disabled={rowIndex !== activeRow}
       />
     ))}
     <span className="game-grid-span">{status}</span>
