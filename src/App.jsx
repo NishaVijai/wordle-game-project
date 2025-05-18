@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState, useRef } from 'react';
-import viteLogo from '/vite.svg'
 import { Header } from './components/headerComponent/Header.jsx';
 import { Footer } from './components/footerComponent/Footer.jsx';
 import { GameGridContainer } from './components/mainContainer/GameGridContainer.jsx';
@@ -12,19 +11,10 @@ function App() {
   const [correctWord, setCorrectWord] = useState('');
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
-  const resultRef = useRef(null);
-
-  const howToPlay = document.querySelector('.how-to-play');
-  const resultContainer = document.querySelector('.result-container');
-
-  useEffect(() => {
-    fetch('/WordleWords.txt')
-      .then((response) => response.text())
-      .then((text) => {
-        setWords(text.split('\n').map(w => w.trim()).filter(Boolean));
-      });
-  }, []);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     fetch('/WordleWords.txt')
@@ -32,65 +22,66 @@ function App() {
       .then((text) => {
         const wordList = text.split('\n').map(w => w.trim()).filter(Boolean);
         setWords(wordList);
-
-        if (!correctWord && wordList.length > 0) {
-          const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
-          setCorrectWord(randomWord);
+        if (wordList.length > 0) {
+          setCorrectWord(wordList[Math.floor(Math.random() * wordList.length)]);
         }
       });
   }, []);
 
   const handleRestart = () => {
-    howToPlay.classList.remove('show-how-to-play');
-    resultContainer.classList.remove('show-result-container');
-
+    setShowHowToPlay(false);
+    setShowResult(false);
     setCurrentWord('');
     setGameOver(false);
     setGameWon(false);
     if (words.length > 0) {
-      const randomWord = words[Math.floor(Math.random() * words.length)];
-      setCorrectWord(randomWord);
-    }
-
-    if (resultRef.current) {
-      resultRef.current.classList.remove('show-result-container');
+      setCorrectWord(words[Math.floor(Math.random() * words.length)]);
     }
   };
 
   const handleGameEnd = (won) => {
     setGameOver(true);
     setGameWon(won);
-    setTimeout(() => {
-      const result = document.querySelector('.result-container');
-      if (result) result.classList.add('show-result-container');
-    }, 100);
+    setTimeout(() => setShowResult(true), 100);
+  };
+
+  const handleOnClose = () => {
+    setShowHowToPlay(false);
+    setShowResult(false);
+  };
+
+  const handleFocusInput = () => {
+    handleOnClose();
+    if (inputRef.current) inputRef.current.focus();
   };
 
   return (
     <Fragment>
-      <Header />
-      <>
-        <HowToPlay />
-      </>
-      <>
-        <ResultContainer
-          ref={resultRef}
-          gameOver={gameOver}
-          gameWon={gameWon}
-          correctWord={correctWord}
-          onRestart={handleRestart}
-        />
-      </>
+      <Header
+        onShowHowToPlay={() => setShowHowToPlay(true)}
+        onShowResult={() => setShowResult(true)}
+        onFocusInput={handleFocusInput}
+      />
+      <HowToPlay visible={showHowToPlay} onClose={handleOnClose} />
+      <ResultContainer
+        visible={showResult}
+        gameOver={gameOver}
+        gameWon={gameWon}
+        correctWord={correctWord}
+        onRestart={handleRestart}
+        onClose={handleOnClose}
+      />
       <section className="game-container">
         <GameGridContainer
           words={words}
           correctWord={correctWord}
           onGameEnd={handleGameEnd}
+          inputRef={inputRef}
         />
       </section>
       <Footer />
     </Fragment>
-  )
+  );
 }
 
-export default App
+export default App;
