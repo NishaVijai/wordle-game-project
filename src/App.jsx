@@ -70,6 +70,7 @@ function App() {
         correctWord={correctWord}
         onRestart={handleRestart}
         onClose={handleOnClose}
+        onFocusInput={handleFocusInput}
       />
       <section className="game-container">
         <GameGridContainer
