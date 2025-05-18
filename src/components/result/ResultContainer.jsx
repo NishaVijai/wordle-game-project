@@ -21,14 +21,28 @@ export const ResultContainer = ({ gameOver, gameWon, correctWord, onRestart }) =
           </>
         ) : (
           <>
-            <h2>Game Over!</h2>
-            {gameOver ? <p>The correct word was: <strong>{correctWord}</strong></p> : <p>You have not played the game yet.</p>}
-            <button
-              className="restart-button"
-              onClick={onRestart}
-            >
-              Restart Game
-            </button>
+            {gameOver ? (
+              <>
+                <h2>Game Over!</h2>
+                <p>The correct word was: <strong>{correctWord}</strong></p>
+                <button
+                  className="restart-button"
+                  onClick={onRestart}
+                >
+                  Restart Game
+                </button>
+              </>
+            ) : (
+              <>
+                <p>You have not played the game yet.</p>
+                <button
+                  className="restart-button"
+                  onClick={onRestart}
+                >
+                  Play
+                </button>
+              </>
+            )}
           </>
         )}
       </section>
