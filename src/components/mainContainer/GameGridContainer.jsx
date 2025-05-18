@@ -1,33 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
+import { GameGridRow } from './GameGridRow.jsx';
 
-export const GameGridContainer = ({ words, correctWord, onGameEnd }) => {
-  const rows = 6;
-  const cols = 5;
-  const [guesses, setGuesses] = useState(Array(rows).fill(''));
-  const [activeRow, setActiveRow] = useState(0);
-  const [status, setStatus] = useState(Array(rows).fill(''));
-  const [cellColors, setCellColors] = useState(Array(rows).fill(null).map(() => Array(cols).fill('')));
-  const inputRefs = useRef([...Array(rows)].map(() => Array(cols).fill(null)));
-
-  useEffect(() => {
-    if (inputRefs.current[0][0]) inputRefs.current[0][0].focus();
-  }, []);
+export const GameGridContainer = ({ words, correctWord, onGameEnd, inputRef }) => {
+  const totalRows = 6;
+  const totalCols = 5;
+  const [allGuesses, setAllGuesses] = useState(Array(totalRows).fill(''));
+  const [currentRow, setCurrentRow] = useState(0);
+  const [rowStatus, setRowStatus] = useState(Array(totalRows).fill(''));
+  const [rowCellColors, setRowCellColors] = useState(Array(totalRows).fill(null).map(() => Array(totalCols).fill('')));
+  const cellRefs = useRef([...Array(totalRows)].map(() => Array(totalCols).fill(null)));
 
   useEffect(() => {
-    setGuesses(Array(rows).fill(''));
-    setActiveRow(0);
-    setStatus(Array(rows).fill(''));
-    setCellColors(Array(rows).fill(null).map(() => Array(cols).fill('')));
-    if (inputRefs.current[0][0]) inputRefs.current[0][0].focus();
+    if (cellRefs.current[0][0]) cellRefs.current[0][0].focus();
+    if (inputRef) inputRef.current = cellRefs.current[0][0];
   }, [correctWord]);
 
-  const getColors = (guess, answer) => {
-    const colors = Array(cols).fill('gray');
+  useEffect(() => {
+    setAllGuesses(Array(totalRows).fill(''));
+    setCurrentRow(0);
+    setRowStatus(Array(totalRows).fill(''));
+    setRowCellColors(Array(totalRows).fill(null).map(() => Array(totalCols).fill('')));
+  }, [correctWord]);
+
+  const getCellColors = (guess, answer) => {
+    const colors = Array(totalCols).fill('gray');
     const answerArr = answer.toUpperCase().split('');
     const guessArr = guess.toUpperCase().split('');
     const answerLetterCount = {};
 
-    for (let i = 0; i < cols; i++) {
+    for (let i = 0; i < totalCols; i++) {
       if (answerArr[i] === guessArr[i]) {
         colors[i] = 'green';
       } else {
@@ -35,7 +36,7 @@ export const GameGridContainer = ({ words, correctWord, onGameEnd }) => {
       }
     }
 
-    for (let i = 0; i < cols; i++) {
+    for (let i = 0; i < totalCols; i++) {
       if (colors[i] === 'green') continue;
       if (answerLetterCount[guessArr[i]]) {
         colors[i] = 'yellow';
@@ -45,76 +46,76 @@ export const GameGridContainer = ({ words, correctWord, onGameEnd }) => {
     return colors;
   };
 
-  const handleInput = (rowIdx, colIdx, value) => {
+  const handleCellInput = (rowIndex, columnIndex, value) => {
     if (!/^[A-Za-z]?$/.test(value)) return;
-    const updatedGuesses = [...guesses];
-    let guess = updatedGuesses[rowIdx] || '';
-    guess = guess.substring(0, colIdx) + value.toUpperCase() + guess.substring(colIdx + 1);
-    updatedGuesses[rowIdx] = guess;
-    setGuesses(updatedGuesses);
+    const updatedGuesses = [...allGuesses];
+    let guess = updatedGuesses[rowIndex] || '';
+    guess = guess.substring(0, columnIndex) + value.toUpperCase() + guess.substring(columnIndex + 1);
+    updatedGuesses[rowIndex] = guess;
+    setAllGuesses(updatedGuesses);
 
-    if (value && colIdx < cols - 1) {
-      const nextInput = inputRefs.current[rowIdx][colIdx + 1];
+    if (value && columnIndex < totalCols - 1) {
+      const nextInput = cellRefs.current[rowIndex][columnIndex + 1];
       if (nextInput) nextInput.focus();
     }
   };
 
-  const handleKeyDown = (e, rowIdx, colIdx) => {
-    if (e.key === 'Backspace' && !guesses[rowIdx][colIdx] && colIdx > 0) {
-      const prevInput = inputRefs.current[rowIdx][colIdx - 1];
+  const handleCellKeyDown = (e, rowIndex, columnIndex) => {
+    if (e.key === 'Backspace' && !allGuesses[rowIndex][columnIndex] && columnIndex > 0) {
+      const prevInput = cellRefs.current[rowIndex][columnIndex - 1];
       if (prevInput) prevInput.focus();
     }
 
     if (
       e.key === 'Enter' &&
-      guesses[rowIdx] &&
-      guesses[rowIdx].length === cols &&
-      [...guesses[rowIdx]].every(char => char && char !== ' ') &&
-      rowIdx === activeRow
+      allGuesses[rowIndex] &&
+      allGuesses[rowIndex].length === totalCols &&
+      [...allGuesses[rowIndex]].every(char => char && char !== ' ') &&
+      rowIndex === currentRow
     ) {
-      const guessWord = guesses[rowIdx].toLowerCase();
+      const guessWord = allGuesses[rowIndex].toLowerCase();
 
       if (!words.map(w => w.toLowerCase()).includes(guessWord)) {
-        setStatus(s => {
-          const newStatus = [...s];
-          newStatus[rowIdx] = 'Not in word list';
+        setRowStatus(statusArr => {
+          const newStatus = [...statusArr];
+          newStatus[rowIndex] = 'Not in word list';
           return newStatus;
         });
         return;
       }
 
-      const colors = getColors(guesses[rowIdx], correctWord);
-      setCellColors(prev => {
+      const colors = getCellColors(allGuesses[rowIndex], correctWord);
+      setRowCellColors(prev => {
         const updated = prev.map(arr => [...arr]);
-        updated[rowIdx] = colors;
+        updated[rowIndex] = colors;
         return updated;
       });
 
       if (guessWord === correctWord.toLowerCase()) {
-        setStatus(s => {
-          const newStatus = [...s];
-          newStatus[rowIdx] = 'Correct!';
+        setRowStatus(statusArr => {
+          const newStatus = [...statusArr];
+          newStatus[rowIndex] = 'Correct!';
           return newStatus;
         });
         if (onGameEnd) onGameEnd(true);
         return;
       }
 
-      if (rowIdx < rows - 1) {
-        setActiveRow(rowIdx + 1);
-        setStatus(s => {
-          const newStatus = [...s];
-          newStatus[rowIdx] = 'Incorrect';
+      if (rowIndex < totalRows - 1) {
+        setCurrentRow(rowIndex + 1);
+        setRowStatus(statusArr => {
+          const newStatus = [...statusArr];
+          newStatus[rowIndex] = 'Incorrect';
           return newStatus;
         });
         setTimeout(() => {
-          const nextRowFirstInput = inputRefs.current[rowIdx + 1][0];
+          const nextRowFirstInput = cellRefs.current[rowIndex + 1][0];
           if (nextRowFirstInput) nextRowFirstInput.focus();
         }, 50);
       } else {
-        setStatus(s => {
-          const newStatus = [...s];
-          newStatus[rowIdx] = 'Game Over';
+        setRowStatus(statusArr => {
+          const newStatus = [...statusArr];
+          newStatus[rowIndex] = 'Game Over';
           return newStatus;
         });
         if (onGameEnd) onGameEnd(false);
@@ -122,40 +123,29 @@ export const GameGridContainer = ({ words, correctWord, onGameEnd }) => {
     }
   };
 
-  const colorClass = color => {
-    if (color === 'green') return { backgroundColor: '#22c55e', color: '#fff' };
-    if (color === 'yellow') return { backgroundColor: '#eab308', color: '#fff' };
-    if (color === 'gray') return { backgroundColor: '#6b7280', color: '#fff' };
-    return {};
+  const getColorClass = color => {
+    if (color === 'green') return 'cell-green';
+    if (color === 'yellow') return 'cell-yellow';
+    if (color === 'gray') return 'cell-gray';
+    return '';
   };
 
   return (
     <div className="game-grid-container">
       <div className="game-grid">
-        {guesses.map((guess, rowIdx) => (
-          <div className="game-grid-row" key={rowIdx}>
-            {Array.from({ length: cols }).map((_, colIdx) => (
-              <input
-                key={`${rowIdx}-${colIdx}`}
-                className="box text-center uppercase"
-                maxLength={1}
-                ref={el => (inputRefs.current[rowIdx][colIdx] = el)}
-                value={guess[colIdx] || ""}
-                onChange={e => handleInput(rowIdx, colIdx, e.target.value)}
-                onKeyDown={e => handleKeyDown(e, rowIdx, colIdx)}
-                disabled={rowIdx !== activeRow}
-                style={{
-                  width: 40,
-                  height: 40,
-                  marginRight: 2,
-                  ...colorClass(cellColors[rowIdx][colIdx])
-                }}
-              />
-            ))}
-            <span className="game-grid-span">
-              {status[rowIdx]}
-            </span>
-          </div>
+        {allGuesses.map((guess, rowIndex) => (
+          <GameGridRow
+            key={rowIndex}
+            rowIndex={rowIndex}
+            guess={guess}
+            colors={rowCellColors[rowIndex].map(getColorClass)}
+            inputRefs={cellRefs}
+            cols={totalCols}
+            activeRow={currentRow}
+            handleInput={handleCellInput}
+            handleKeyDown={handleCellKeyDown}
+            status={rowStatus[rowIndex]}
+          />
         ))}
       </div>
     </div>
