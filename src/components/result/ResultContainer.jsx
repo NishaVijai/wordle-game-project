@@ -1,12 +1,9 @@
-export const ResultContainer = ({ gameOver, gameWon, correctWord, onRestart }) => {
-  const closeResultContainer = () => {
-    const result = document.querySelector('.result-container');
-    result.classList.remove('show-result-container');
-  };
+export const ResultContainer = ({ visible, gameOver, gameWon, correctWord, onRestart, onClose }) => {
+  if (!visible) return null;
 
   return (
-    <div className="result-container">
-      <button className="close-show-result-button" onClick={closeResultContainer}>X</button>
+    <div className="result-container show-result-container">
+      <button className="close-show-result-button" onClick={onClose}>X</button>
       <section className="result">
         {gameWon ? (
           <>
