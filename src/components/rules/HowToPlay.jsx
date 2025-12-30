@@ -12,6 +12,7 @@ export const HowToPlay = ({ visible, onClose }) => {
         <p>Guess the word in 6 tries.</p>
         <p>Each guess must be a valid 5-letter word.</p>
         <p>The color of the tiles will change to show how close your guess was to the word.</p>
+        <p>Press Enter to move to the next row and submit your guess.</p>
         <ul>
           <li><strong>Green:</strong> The letter is in the word and in the correct position.</li>
           <li><strong>Yellow:</strong> The letter is in the word but in the wrong position.</li>
